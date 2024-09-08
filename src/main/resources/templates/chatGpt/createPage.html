@@ -108,10 +108,16 @@
         <h2>Сгенерированые страницы:</h2>
 
         <ul>
+            <!-- Цикл по страницам -->
             <li th:each="page : ${generatedPages}">
-                <a th:href="@{/generated/{page}(page=${page})}" th:text="${page}"></a>
+                <form th:action="@{/chat/getPage}" method="get">
+                    <!-- Скрытое поле для передачи номера страницы в контроллер -->
+                    <input type="hidden" name="id" th:value="${page.id}" />
+                    <button type="submit" th:text="${page.pageName}"></button>
+                </form>
             </li>
         </ul>
+
     </div>
 
 

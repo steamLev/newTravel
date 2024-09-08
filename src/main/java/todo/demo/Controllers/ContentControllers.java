@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import reactor.core.publisher.Mono;
 import todo.demo.Models.ChatGpt.ChatGptResponse;
+import todo.demo.Models.PageHtml;
 import todo.demo.Services.OpenAiService;
 import todo.demo.Services.WebGenerate;
 
@@ -35,9 +36,20 @@ OpenAiService openAiService;
     WebGenerate webGenerate;
     @GetMapping("/chat")
     public String indexOrder(Model model){
-        List<String> generatedPages = webGenerate.getGeneratedPages();
+        List<PageHtml> generatedPages = webGenerate.getGeneratedPages();
         model.addAttribute("generatedPages", generatedPages);
       return "chatGpt/createPage";
+    }
+
+    @GetMapping("/chat/getPage")
+    public String indexOrder(
+            @RequestParam(value = "id", required = false) Long id,
+                              Model model){
+        log.info("pageName "+id);
+         PageHtml page = webGenerate.getPageByName(id);
+        model.addAttribute("page", page.getPageContent());
+        model.addAttribute("pageTitle", page.getPageName());
+        return "chatGpt/pageTravel";
     }
 
     @PostMapping("/chat/generate/{promt}")
