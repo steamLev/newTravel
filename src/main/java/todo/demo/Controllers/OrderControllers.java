@@ -3,11 +3,13 @@ package todo.demo.Controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import todo.demo.Models.OrderTask;
+import todo.demo.Models.PageHtml;
 import todo.demo.Services.*;
 
 import java.math.BigDecimal;
@@ -29,9 +31,15 @@ TravelService travelService;
     String processed;
     @Value("${processType.done}")
     String done;
-    @GetMapping("/order")
-    public String indexOrder(){
 
+    @Autowired
+    @Qualifier("GenerateWebTravel")
+    WebGenerate webGenerate;
+    @GetMapping("/order")
+    public String indexOrder(Model model){
+
+        List<PageHtml> generatedPages = webGenerate.getGeneratedPages();
+        model.addAttribute("generatedPages", generatedPages);
         return "index";
     }
     @GetMapping("/order/destination")

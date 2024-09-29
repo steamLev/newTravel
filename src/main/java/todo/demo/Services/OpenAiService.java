@@ -9,9 +9,11 @@ import reactor.core.publisher.Mono;
 import todo.demo.Models.ChatGpt.ChatGptRequest;
 import todo.demo.Models.ChatGpt.ChatGptResponse;
 import todo.demo.Models.ChatGpt.MessageGpt;
+import todo.demo.Models.Cred;
 import todo.demo.Repositories.CredRepository;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @NoArgsConstructor

@@ -98,7 +98,23 @@
     <a href="/order/destination">НАПРАВЛЕНИЯ</a>
 </div>
 
-    <a href="#">
+    <ul>
+        <!-- Цикл по страницам -->
+        <li th:each="page : ${generatedPages}">
+            <!-- Оборачиваем изображение в ссылку -->
+            <a th:href="@{/chat/getPage(id=${page.id})}">
+                <div class="image-container">
+
+                    <img th:src="@{${page.pageImage}}" class="image">
+                    <div class="text-block">
+                    <div class="title" th:text="${page.pageName}"></div>
+                    </div>
+                </div>
+            </a>
+        </li>
+    </ul>
+
+    <!--a href="#">
     <div class="image-container">
         <img src="images/kegety.jpg" alt="Трекинг по Кегети" class="image">
         <div class="text-block">
@@ -124,7 +140,7 @@
             <div class="dates">15.07.2018 - 25.07.2018</div>
         </div>
     </div>
-    </a>
+    </a-->
     <div class="order-form">
         <form class="order-form" method="post" th:action="@{/order/create}">
             <h1>Создайте свой тур - поездка на лошадях по холмам, спуск на велосипеде... </h1>

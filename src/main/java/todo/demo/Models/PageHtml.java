@@ -18,9 +18,12 @@ public class PageHtml {
     private String pageName;
     @Column
     private String pageContent;
+    @Column
+    private String pageImage;
 
-    public PageHtml(String pageName, String pageContent) {
+    public PageHtml(String pageName, String pageContent,String pageImage) {
         this.pageName=pageName;
         this.pageContent=pageContent;
+        this.pageImage=pageImage;
     }
 }

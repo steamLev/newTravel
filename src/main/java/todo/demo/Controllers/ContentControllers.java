@@ -45,25 +45,32 @@ OpenAiService openAiService;
     public String indexOrder(
             @RequestParam(value = "id", required = false) Long id,
                               Model model){
-        log.info("pageName "+id);
+
          PageHtml page = webGenerate.getPageByName(id);
         model.addAttribute("page", page.getPageContent());
         model.addAttribute("pageTitle", page.getPageName());
-        return "chatGpt/pageTravel";
+        model.addAttribute("pageImage", page.getPageImage());
+        return "pageTravel";
     }
 
-    @PostMapping("/chat/generate/{promt}")
-    public String generateContent(@PathVariable("promt") String prompt) throws IOException {
-        String content=  openAiService.getChatGptResponse(prompt ).block();
-        webGenerate.generateWebs(prompt,content);
-        return   "chatGpt/createPage";
+
+    @PostMapping("/chat/save")
+    public String saveContent(@RequestParam("title") String prompt,
+                              @RequestParam("content") String content,
+                              @RequestParam("image") String image,Model model) throws IOException {
+
+        webGenerate.generateWebs(prompt,content,image);
+        return  "redirect:/chat";
     }
 
     @PostMapping("/chat/generate")
-    public String generateContentFront( @RequestParam(value = "prompt", required = false) String prompt) throws IOException {
+    public String generateContentFront( @RequestParam(value = "prompt", required = false) String prompt,
+                                        Model model) throws IOException {
        String  content=  openAiService.getChatGptResponse(prompt ).block();
-        webGenerate.generateWebs(prompt,content);
-        return  "redirect:/chat";
+        model.addAttribute("content", content);
+        List<PageHtml> generatedPages = webGenerate.getGeneratedPages();
+        model.addAttribute("generatedPages", generatedPages);
+        return "chatGpt/createPage";
     }
 
 

@@ -23,14 +23,14 @@ public class GenerateWebTravel implements WebGenerate {
     @Autowired
     PageHtmlRepository pageHtmlRepository;
     @Override
-    public String generateWebs(String promt,String content) {
-        String pageName = promt.substring(7)+".html";
+    public String generateWebs(String promt,String content,String image) {
+        String pageName = promt;
 
         // Создание HTML файла с контентом
        StringBuilder pageContent=new StringBuilder();
 
         pageContent.append(  content  );
-  pageHtmlRepository.save(new PageHtml(pageName,pageContent.toString()));
+  pageHtmlRepository.save(new PageHtml(pageName,pageContent.toString(),image));
         return pageName;
 
     }
@@ -39,7 +39,7 @@ public class GenerateWebTravel implements WebGenerate {
     public List<PageHtml> getGeneratedPages(){
 
         return pageHtmlRepository.findAll().stream()
-                .map(page->new PageHtml(page.getId(),page.getPageName(),"")).collect(Collectors.toList());
+                .map(page->new PageHtml(page.getId(),page.getPageName(),"", page.getPageImage())).collect(Collectors.toList());
     }
 
     @Override

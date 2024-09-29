@@ -29,9 +29,9 @@
         .image-container-guide {
             width: 100%;
             height: auto;
-             position: relative;
+            position: relative;
             margin-bottom: 20px;
-            margin-left:100px
+            margin-left: 100px;
         }
         .text-block {
             position: absolute;
@@ -75,7 +75,7 @@
             background-color: #333;
             overflow: hidden;
         }
-         .navbar a {
+        .navbar a {
             float: left;
             display: block;
             color: white;
@@ -92,23 +92,21 @@
         }
     </style>
 </head>
-<meta charset="UTF-8"> </head>
 <body>
 <div class="container">
-    <div class="navbar"  >
-
-        <a href="/chat">На главную</a>
-        <div th:text="${pageName}">                </div>
+    <div class="navbar">
+        <a href="/order">ГЛАВНАЯ</a>
     </div>
+
     <div class="order-form">
-
-                <div th:text="${page}">                </div>
-
-
+        <div th:text="${page}"></div>
     </div>
 
-</div>
 
+        <!-- Цикл по страницам -->
+    <div class="image-container">
+        <img th:src="@{${pageImage}}" class="image">
+    </div>
 </div>
 </body>
 </html>
