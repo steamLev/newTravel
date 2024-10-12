@@ -7,9 +7,10 @@
     <style>
         body {
             margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+             font-family: "Times New Roman", Times, serif;
+            margin: 20px;
+            line-height: 1.6;
+            background-color: #f7f7f7;
         }
         .container {
             width: 100%;
@@ -98,15 +99,17 @@
         <a href="/order">ГЛАВНАЯ</a>
     </div>
 
+    <div class="image-container">
+        <img th:src="@{${pageImage}}" class="image">
+    </div>
+
     <div class="order-form">
         <div th:text="${page}"></div>
     </div>
 
 
         <!-- Цикл по страницам -->
-    <div class="image-container">
-        <img th:src="@{${pageImage}}" class="image">
-    </div>
+
 </div>
 </body>
 </html>
