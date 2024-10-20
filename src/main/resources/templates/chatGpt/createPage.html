@@ -109,7 +109,7 @@
         <form th:action="@{/chat/save}" method="post">
             <input type="text" id="title" name="title" placeholder="Напишите заголовок">
             <input type="text" id="content" name="content" th:text="${content}" placeholder="Напишите текст">
-            <input type="text" id="image" name="image" placeholder="images/****.jpg">
+            <input type="text" id="image" name="image" placeholder="/images/****.jpg">
             <div th:text="${pageName}"> </div>
 
             <button type="submit" th:text="Сохранить"></button>

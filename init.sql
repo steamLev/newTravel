@@ -1,0 +1,2 @@
+ALTER TABLE page_html
+ALTER COLUMN page_content TYPE VARCHAR(7000);

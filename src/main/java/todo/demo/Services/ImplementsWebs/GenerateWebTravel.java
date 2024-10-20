@@ -2,6 +2,8 @@ package todo.demo.Services.ImplementsWebs;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import todo.demo.Models.PageHtml;
 import todo.demo.Repositories.PageHtmlRepository;
@@ -39,6 +41,14 @@ public class GenerateWebTravel implements WebGenerate {
     public List<PageHtml> getGeneratedPages(){
 
         return pageHtmlRepository.findAll().stream()
+                .map(page->new PageHtml(page.getId(),page.getPageName(),"", page.getPageImage())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PageHtml> getGenerated2Pages(Long id){
+        Pageable pageable = PageRequest.of(0, 3);
+        return pageHtmlRepository.findAll(pageable).stream()
+                .filter(page-> page.getId()!= id)
                 .map(page->new PageHtml(page.getId(),page.getPageName(),"", page.getPageImage())).collect(Collectors.toList());
     }
 

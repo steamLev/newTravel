@@ -46,10 +46,12 @@ OpenAiService openAiService;
             @RequestParam(value = "id", required = false) Long id,
                               Model model){
 
-         PageHtml page = webGenerate.getPageByName(id);
+        PageHtml page = webGenerate.getPageByName(id);
         model.addAttribute("page", page.getPageContent());
         model.addAttribute("pageTitle", page.getPageName());
         model.addAttribute("pageImage", page.getPageImage());
+        List<PageHtml> generatedPages = webGenerate.getGenerated2Pages( id);
+        model.addAttribute("generatedPages", generatedPages);
         return "pageTravel";
     }
 

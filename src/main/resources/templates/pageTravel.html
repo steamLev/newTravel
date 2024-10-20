@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Создание страницы</title>
+    <meta name="keywords" content="средняя азия, туры, центральная азия, программы туров, Центральная Азия, Узбекистан, Казахстан, Кыргызстан, Туркменистан, Таджикистан, поездка в центральную азию, путешествие в Центральную Азию">
     <style>
         body {
             margin: 0;
@@ -104,11 +105,36 @@
     </div>
 
     <div class="order-form">
+        <div th:text="${pageTitle}"></div>
+    </div>
+
+
+
+    <ul>
+        <!-- Цикл по страницам -->
+        <li th:each="page : ${generatedPages}">
+            <form th:action="@{/chat/getPage}" method="get">
+                <!-- Скрытое поле для передачи номера страницы в контроллер -->
+                <input type="hidden" name="id" th:value="${page.id}" />
+                <button type="submit" th:text="${page.pageName}"></button>
+            </form>
+        </li>
+    </ul>
+    <div class="order-form">
         <div th:text="${page}"></div>
     </div>
 
 
+    <ul>
         <!-- Цикл по страницам -->
+        <li th:each="page : ${generatedPages}">
+            <form th:action="@{/chat/getPage}" method="get">
+                <!-- Скрытое поле для передачи номера страницы в контроллер -->
+                <input type="hidden" name="id" th:value="${page.id}" />
+                <button type="submit" th:text="${page.pageName}"></button>
+            </form>
+        </li>
+    </ul>
 
 </div>
 </body>
