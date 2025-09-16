@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: two-level-cache-demo
+  
+  # Redis Configuration
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+  # Cache Configuration
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=10m,recordStats
+    redis:
+      time-to-live: 600000 # 10 minutes in milliseconds
+      cache-null-values: false
+
+# Custom cache configuration
+cache:
+  caffeine:
+    spec: maximumSize=1000,expireAfterWrite=5m,recordStats
+  redis:
+    default-ttl: 600000 # 10 minutes
+    key-prefix: "cache:"
+    use-key-prefix: true
+
+# Logging
+logging:
+  level:
+    com.example.cache: DEBUG
+    org.springframework.cache: DEBUG
