@@ -1,11 +1,40 @@
-# 1. Используем базовый образ с JDK
-FROM openjdk:21-jdk-slim
+# Multi-stage build для оптимизации размера образа
+FROM maven:3.9.4-openjdk-17-slim AS build
 
-# 2. Указываем рабочую директорию
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# 3. Копируем файл jar в контейнер
-COPY target/TravelCentralAsia.jar /app/app.jar
+# Копируем pom.xml и загружаем зависимости
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
 
-# 4. Устанавливаем команду для запуска приложения
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+# Копируем исходный код
+COPY src ./src
+
+# Собираем приложение
+RUN mvn clean package -DskipTests
+
+# Production stage
+FROM openjdk:17-jre-slim
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+# Создаем пользователя для безопасности
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Копируем JAR файл из build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Устанавливаем права доступа
+RUN chown -R appuser:appuser /app
+USER appuser
+
+# Открываем порт
+EXPOSE 8080
+
+# Настройки JVM для production
+ENV JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC -XX:+UseContainerSupport"
+
+# Команда запуска
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
