@@ -1,0 +1,23 @@
+{
+  "data": {
+    "users": [
+      {"id": 1, "name": "John", "partyIds": [111, 222, 333]},
+      {"id": 2, "name": "Jane", "partyIds": [444, 555]}
+    ],
+    "groups": {
+      "admin": {
+        "partyIds": [999, 888, 777, 666]
+      },
+      "user": {
+        "partyIds": [123, 456]
+      }
+    },
+    "mainPartyIds": [1001, 1002, 1003, 1004, 1005],
+    "otherData": "some value"
+  },
+  "additional": {
+    "morePartyIds": [2001, 2002],
+    "emptyPartyIds": []
+  },
+  "status": "success"
+}

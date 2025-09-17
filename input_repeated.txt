@@ -1,0 +1,22 @@
+{
+  "data1": {
+    "partyIds": [111, 111, 222, 33333],
+    "name": "first"
+  },
+  "data2": {
+    "partyIds": [111, 111, 222, 33333],
+    "name": "second"
+  },
+  "data3": {
+    "partyIds": [111, 111, 222, 33333],
+    "name": "third"
+  },
+  "other": {
+    "partyIds": [444, 555, 666],
+    "description": "different"
+  },
+  "more": {
+    "partyIds": [111, 111, 222, 33333],
+    "type": "another"
+  }
+}
