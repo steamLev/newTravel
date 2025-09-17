@@ -1,30 +1,32 @@
 version: '3.8'
-services:
-  app:
-    image: spring-boot-app:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-    depends_on:
-      - db
 
-  db:
-    image: postgres:14
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: two-level-cache-redis
     ports:
-      - "5432:5432"
+      - "6379:6379"
+    command: redis-server --appendonly yes
     volumes:
-      - postgres-data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Опционально: Redis Commander для веб-интерфейса
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: two-level-cache-redis-commander
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    depends_on:
+      - redis
+    restart: unless-stopped
 
 volumes:
-  postgres-data:
+  redis_data:
