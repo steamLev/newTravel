@@ -1,0 +1,11 @@
+{
+  "data": {
+    "users": [
+      {"id": 1, "name": "John"},
+      {"id": 2, "name": "Jane"}
+    ],
+    "partyIds":[111,111,222,33333],
+    "otherData": "some value"
+  },
+  "status": "success"
+}
