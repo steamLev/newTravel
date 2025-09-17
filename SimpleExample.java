@@ -29,6 +29,7 @@ public class SimpleExample {
                 }
                 
                 System.out.println("Извлеченные partyIds: " + partyIds);
+                System.out.println("Количество partyIds: " + partyIds.size());
             } else {
                 System.out.println("partyIds не найдены в файле");
             }

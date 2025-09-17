@@ -132,6 +132,38 @@ public class PartyIdExtractor {
     }
     
     /**
+     * Метод для быстрого подсчета количества partyIds
+     */
+    public static int countPartyIds(String filePath) throws IOException {
+        String content = readFile(filePath);
+        Pattern pattern = Pattern.compile("\"partyIds\"\\s*:\\s*\\[([^\\]]+)\\]");
+        Matcher matcher = pattern.matcher(content);
+        
+        if (matcher.find()) {
+            String idsString = matcher.group(1);
+            String[] ids = idsString.split(",");
+            return ids.length;
+        }
+        return 0;
+    }
+    
+    /**
+     * Метод для получения статистики по partyIds
+     */
+    public static void printPartyIdsStatistics(String filePath) throws IOException {
+        List<String> ids = extractPartyIdsWithRegex(filePath);
+        
+        System.out.println("=== Статистика partyIds ===");
+        System.out.println("Количество partyIds: " + ids.size());
+        System.out.println("Список partyIds: " + ids);
+        
+        if (!ids.isEmpty()) {
+            System.out.println("Первый partyId: " + ids.get(0));
+            System.out.println("Последний partyId: " + ids.get(ids.size() - 1));
+        }
+    }
+    
+    /**
      * Главный метод для демонстрации
      */
     public static void main(String[] args) {
@@ -141,14 +173,24 @@ public class PartyIdExtractor {
             System.out.println("=== Метод 1: Регулярные выражения ===");
             List<String> ids1 = extractPartyIdsWithRegex(filePath);
             System.out.println("Найденные partyIds: " + ids1);
+            System.out.println("Количество partyIds: " + ids1.size());
             
             System.out.println("\n=== Метод 2: Поиск по строкам ===");
             List<String> ids2 = extractPartyIdsByLine(filePath);
             System.out.println("Найденные partyIds: " + ids2);
+            System.out.println("Количество partyIds: " + ids2.size());
             
             System.out.println("\n=== Метод 3: Продвинутый парсинг ===");
             List<String> ids3 = extractPartyIdsAdvanced(filePath);
             System.out.println("Найденные partyIds: " + ids3);
+            System.out.println("Количество partyIds: " + ids3.size());
+            
+            System.out.println("\n=== Быстрый подсчет ===");
+            int count = countPartyIds(filePath);
+            System.out.println("Количество partyIds (быстрый метод): " + count);
+            
+            System.out.println("\n=== Подробная статистика ===");
+            printPartyIdsStatistics(filePath);
             
         } catch (IOException e) {
             System.err.println("Ошибка при чтении файла: " + e.getMessage());

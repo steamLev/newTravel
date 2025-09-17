@@ -28,6 +28,7 @@ if (line.contains("\"partyIds\"")) {
 
 ## Использование
 
+### Простой пример с подсчетом:
 1. Скомпилируйте код:
 ```bash
 javac SimpleExample.java
@@ -36,6 +37,40 @@ javac SimpleExample.java
 2. Запустите:
 ```bash
 java SimpleExample
+```
+
+### Только подсчет количества:
+```bash
+javac PartyIdCounter.java
+java PartyIdCounter
+```
+
+### Полный функционал:
+```bash
+javac PartyIdExtractor.java
+java PartyIdExtractor
+```
+
+## Подсчет partyIds
+
+Код предоставляет несколько способов подсчета:
+
+1. **Через размер списка**: `partyIds.size()`
+2. **Через подсчет запятых**: количество запятых + 1
+3. **Через разделение строки**: `idsString.split(",").length`
+
+### Примеры методов подсчета:
+
+```java
+// Быстрый подсчет
+int count = countPartyIds(filePath);
+
+// Подсчет с извлечением списка
+List<String> ids = extractPartyIdsWithRegex(filePath);
+int count = ids.size();
+
+// Статистика
+printPartyIdsStatistics(filePath);
 ```
 
 ## Формат входного файла
