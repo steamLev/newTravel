@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: rabbitmq-message-sender
+  
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    connection-timeout: 10000
+    requested-heartbeat: 30
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+      retry:
+        enabled: true
+        initial-interval: 1000
+        max-attempts: 3
+        max-interval: 10000
+        multiplier: 2
+
+# Logging configuration
+logging:
+  level:
+    com.example.rabbitmq: DEBUG
+    org.springframework.amqp: DEBUG
+    org.springframework.rabbit: DEBUG
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# Custom configuration
+rabbitmq:
+  channel:
+    max-available: 10
+    check-interval: 5000
+  queue:
+    name: message.queue
+    durable: true
+    auto-delete: false
+  exchange:
+    name: message.exchange
+    type: direct
+    durable: true

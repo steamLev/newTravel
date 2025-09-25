@@ -1,0 +1,27 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    connection-timeout: 5000
+    requested-heartbeat: 30
+
+rabbitmq:
+  channel:
+    max-available: 5
+    check-interval: 1000
+  queue:
+    name: test.message.queue
+    durable: true
+    auto-delete: true
+  exchange:
+    name: test.message.exchange
+    type: direct
+    durable: true
+
+logging:
+  level:
+    com.example.rabbitmq: DEBUG
+    org.springframework.amqp: DEBUG
