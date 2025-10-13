@@ -20,10 +20,12 @@ spring:
         max-attempts: 3
         max-interval: 10000
         multiplier: 2
-    # Отключаем автоматическое подключение
+    # Включаем автоматическое подключение для @RabbitListener
     listener:
       simple:
-        auto-startup: false
+        auto-startup: true
+        concurrency: 2
+        max-concurrency: 10
 
 # Logging configuration
 logging:
@@ -43,7 +45,7 @@ management:
       show-details: always
   health:
     rabbit:
-      enabled: false
+      enabled: true
 
 # Custom configuration
 rabbitmq:
