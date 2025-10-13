@@ -67,6 +67,27 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <!-- Docx4j Core - основная зависимость для работы с openpackaging -->
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-core</artifactId>
+            <version>11.4.11</version>
+        </dependency>
+
+        <!-- Docx4j Export FO -->
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-export-fo</artifactId>
+            <version>11.4.11</version>
+        </dependency>
+
+        <!-- Docx4j JAXB Reference Implementation -->
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-JAXB-ReferenceImpl</artifactId>
+            <version>11.4.11</version>
+        </dependency>
     </dependencies>
 
     <build>
