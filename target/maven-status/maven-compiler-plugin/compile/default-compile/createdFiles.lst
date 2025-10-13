@@ -1,12 +1,9 @@
 com/example/rabbitmq/model/ChannelStatus.class
-com/example/rabbitmq/test/SimpleDocx4jTest.class
 com/example/rabbitmq/model/Message.class
 com/example/rabbitmq/config/SchedulingConfig.class
 com/example/rabbitmq/service/ChannelMonitorService.class
 com/example/rabbitmq/RabbitmqMessageSenderApplication.class
 com/example/rabbitmq/model/MessageBatch.class
-com/example/rabbitmq/test/Docx4jTest.class
 com/example/rabbitmq/config/RabbitMQConfig.class
 com/example/rabbitmq/controller/MessageController.class
-com/example/rabbitmq/test/FullDocx4jTest.class
 com/example/rabbitmq/service/MessageSenderService.class

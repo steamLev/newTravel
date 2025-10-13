@@ -2,11 +2,8 @@
 /workspace/src/main/java/com/example/rabbitmq/model/ChannelStatus.java
 /workspace/src/main/java/com/example/rabbitmq/service/MessageSenderService.java
 /workspace/src/main/java/com/example/rabbitmq/controller/MessageController.java
-/workspace/src/main/java/com/example/rabbitmq/test/SimpleDocx4jTest.java
 /workspace/src/main/java/com/example/rabbitmq/service/ChannelMonitorService.java
 /workspace/src/main/java/com/example/rabbitmq/RabbitmqMessageSenderApplication.java
 /workspace/src/main/java/com/example/rabbitmq/model/Message.java
 /workspace/src/main/java/com/example/rabbitmq/config/RabbitMQConfig.java
 /workspace/src/main/java/com/example/rabbitmq/model/MessageBatch.java
-/workspace/src/main/java/com/example/rabbitmq/test/FullDocx4jTest.java
-/workspace/src/main/java/com/example/rabbitmq/test/Docx4jTest.java

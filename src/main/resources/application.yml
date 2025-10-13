@@ -20,6 +20,10 @@ spring:
         max-attempts: 3
         max-interval: 10000
         multiplier: 2
+    # Отключаем автоматическое подключение
+    listener:
+      simple:
+        auto-startup: false
 
 # Logging configuration
 logging:
@@ -37,6 +41,9 @@ management:
   endpoint:
     health:
       show-details: always
+  health:
+    rabbit:
+      enabled: false
 
 # Custom configuration
 rabbitmq:
