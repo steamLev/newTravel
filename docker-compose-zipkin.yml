@@ -1,0 +1,164 @@
+version: '3.8'
+
+services:
+  # Zookeeper для Kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper-zipkin
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - zipkin-network
+
+  # Kafka брокер
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka-zipkin
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9101:9101"  # JMX порт для метрик
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      # JMX настройки для метрик
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+      JMX_PORT: 9101
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=9101 -Dcom.sun.management.jmxremote.rmi.port=9101 -Djava.rmi.server.hostname=kafka
+    networks:
+      - zipkin-network
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Zipkin Server
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin-server
+    ports:
+      - "9411:9411"
+    environment:
+      # Используем Kafka как транспорт для Zipkin
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      STORAGE_TYPE: kafka
+      KAFKA_TOPIC: zipkin
+    depends_on:
+      - kafka
+    networks:
+      - zipkin-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9411/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Spring Boot приложение с трассировкой
+  spring-app:
+    build: .
+    container_name: spring-app-zipkin
+    ports:
+      - "8080:8080"
+    environment:
+      # Zipkin конфигурация
+      SPRING_ZIPKIN_BASE_URL: http://zipkin:9411
+      SPRING_ZIPKIN_SENDER_TYPE: kafka
+      SPRING_ZIPKIN_KAFKA_TOPIC: zipkin
+      SPRING_SLEUTH_SAMPLER_PROBABILITY: 1.0
+      SPRING_SLEUTH_KAFKA_ENABLED: true
+      
+      # Kafka конфигурация
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: kafka:29092
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_ZK_NODES: zookeeper:2181
+      
+      # Tracing конфигурация
+      SPRING_SLEUTH_WEB_CLIENT_ENABLED: true
+      SPRING_SLEUTH_MESSAGING_KAFKA_ENABLED: true
+      SPRING_SLEUTH_RABBIT_ENABLED: true
+      
+      # JVM настройки для трассировки
+      JAVA_OPTS: >
+        -Xmx512m -Xms256m
+        -XX:+UseG1GC
+        -Dspring.profiles.active=zipkin
+        -Dspring.zipkin.sender.type=kafka
+        -Dspring.zipkin.kafka.topic=zipkin
+    depends_on:
+      kafka:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
+    networks:
+      - zipkin-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Kafka UI для управления
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui-zipkin
+    depends_on:
+      - kafka
+    ports:
+      - "8081:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+    networks:
+      - zipkin-network
+
+  # Prometheus для метрик
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus-zipkin
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus-zipkin.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - zipkin-network
+
+  # Grafana для визуализации
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana-zipkin
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_zipkin_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    networks:
+      - zipkin-network
+
+volumes:
+  grafana_zipkin_data:
+
+networks:
+  zipkin-network:
+    driver: bridge

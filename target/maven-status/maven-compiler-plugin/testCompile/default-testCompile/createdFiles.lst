@@ -1,4 +1,0 @@
-com/example/rabbitmq/controller/MessageControllerTest.class
-com/example/rabbitmq/integration/RabbitMQIntegrationTest.class
-com/example/rabbitmq/service/SimpleMessageSenderServiceTest.class
-com/example/rabbitmq/service/MessageSenderServiceTest.class

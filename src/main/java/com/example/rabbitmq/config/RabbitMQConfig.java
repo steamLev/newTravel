@@ -8,9 +8,12 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import com.example.rabbitmq.constants.ConstantsRMQ;
 
 @Slf4j
 @Configuration
+@EnableRabbit
 public class RabbitMQConfig {
 
     @Value("${rabbitmq.queue.name}")
@@ -38,6 +41,25 @@ public class RabbitMQConfig {
                 .bind(messageQueue())
                 .to(messageExchange())
                 .with("message.routing.key");
+    }
+
+    // Конфигурация для BINARY_QUEUE
+    @Bean
+    public Queue binaryQueue() {
+        return QueueBuilder.durable(ConstantsRMQ.BINARY_QUEUE).build();
+    }
+
+    @Bean
+    public DirectExchange binaryExchange() {
+        return new DirectExchange(ConstantsRMQ.BINARY_EXCHANGE, true, false);
+    }
+
+    @Bean
+    public Binding binaryBinding() {
+        return BindingBuilder
+                .bind(binaryQueue())
+                .to(binaryExchange())
+                .with(ConstantsRMQ.BINARY_ROUTING_KEY);
     }
 
     @Bean

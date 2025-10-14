@@ -1,0 +1,50 @@
+spring:
+  kafka:
+    # Bootstrap servers
+    bootstrap-servers: localhost:9092
+    
+    # Producer конфигурация
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      retries: 3
+      batch-size: 16384
+      linger-ms: 5
+      buffer-memory: 33554432
+      properties:
+        # Включаем метрики
+        metric.reporters: org.apache.kafka.common.metrics.JmxReporter
+        jmx.enable: true
+    
+    # Consumer конфигурация
+    consumer:
+      group-id: my-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      auto-commit-interval-ms: 1000
+      properties:
+        # Включаем метрики
+        metric.reporters: org.apache.kafka.common.metrics.JmxReporter
+        jmx.enable: true
+
+# Кастомные настройки Kafka
+kafka:
+  topics:
+    - name: test-topic
+      partitions: 3
+      replication-factor: 1
+    - name: user-events
+      partitions: 5
+      replication-factor: 1
+    - name: order-events
+      partitions: 3
+      replication-factor: 1
+
+# Логирование для отладки
+logging:
+  level:
+    org.apache.kafka: INFO
+    org.springframework.kafka: DEBUG

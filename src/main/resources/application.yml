@@ -20,6 +20,12 @@ spring:
         max-attempts: 3
         max-interval: 10000
         multiplier: 2
+    # Включаем автоматическое подключение для @RabbitListener
+    listener:
+      simple:
+        auto-startup: true
+        concurrency: 2
+        max-concurrency: 10
 
 # Logging configuration
 logging:
@@ -33,10 +39,17 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics
+        include: health,info,metrics,prometheus
   endpoint:
     health:
       show-details: always
+  health:
+    rabbit:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 
 # Custom configuration
 rabbitmq:
