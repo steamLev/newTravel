@@ -1,7 +1,9 @@
 com/example/rabbitmq/controller/LifecycleController.class
 com/example/rabbitmq/model/ChannelStatus.class
 com/example/rabbitmq/model/Message.class
+com/example/rabbitmq/service/ZipkinKafkaService.class
 com/example/rabbitmq/listener/DocumentConversionListener.class
+com/example/rabbitmq/controller/ZipkinTestController.class
 com/example/rabbitmq/config/SchedulingConfig.class
 com/example/rabbitmq/service/ChannelMonitorService.class
 com/example/rabbitmq/constants/ConstantsRMQ.class
@@ -10,6 +12,7 @@ com/example/rabbitmq/test/RabbitListenerTest.class
 com/example/rabbitmq/model/MessageBatch.class
 com/example/rabbitmq/listener/KafkaMessageListener.class
 com/example/rabbitmq/controller/TestController.class
+com/example/rabbitmq/config/ZipkinConfig.class
 com/example/rabbitmq/config/ConsulConfig.class
 com/example/rabbitmq/config/RabbitMQConfig.class
 com/example/rabbitmq/service/HealthMonitoringService.class
