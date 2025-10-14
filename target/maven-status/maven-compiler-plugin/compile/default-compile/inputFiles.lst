@@ -3,6 +3,7 @@
 /workspace/src/main/java/com/example/rabbitmq/constants/ConstantsRMQ.java
 /workspace/src/main/java/com/example/rabbitmq/RabbitmqMessageSenderApplication.java
 /workspace/src/main/java/com/example/rabbitmq/listener/DocumentConversionListener.java
+/workspace/src/main/java/com/example/rabbitmq/service/HealthMonitoringService.java
 /workspace/src/main/java/com/example/rabbitmq/config/RabbitMQConfig.java
 /workspace/src/main/java/com/example/rabbitmq/model/MessageBatch.java
 /workspace/src/main/java/com/example/rabbitmq/controller/TestController.java
@@ -10,7 +11,9 @@
 /workspace/src/main/java/com/example/rabbitmq/config/KafkaConfig.java
 /workspace/src/main/java/com/example/rabbitmq/controller/KafkaTestController.java
 /workspace/src/main/java/com/example/rabbitmq/listener/KafkaMessageListener.java
+/workspace/src/main/java/com/example/rabbitmq/config/ConsulConfig.java
 /workspace/src/main/java/com/example/rabbitmq/model/ChannelStatus.java
+/workspace/src/main/java/com/example/rabbitmq/controller/LifecycleController.java
 /workspace/src/main/java/com/example/rabbitmq/service/MessageSenderService.java
 /workspace/src/main/java/com/example/rabbitmq/test/RabbitListenerTest.java
 /workspace/src/main/java/com/example/rabbitmq/controller/MessageController.java
