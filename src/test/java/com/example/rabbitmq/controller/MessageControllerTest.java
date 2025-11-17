@@ -2,6 +2,7 @@ package com.example.rabbitmq.controller;
 
 import com.example.rabbitmq.model.ChannelStatus;
 import com.example.rabbitmq.model.Message;
+import com.example.rabbitmq.model.MessageBatch;
 import com.example.rabbitmq.service.ChannelMonitorService;
 import com.example.rabbitmq.service.MessageSenderService;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +51,8 @@ class MessageControllerTest {
     void testSendMessages_Success() {
         // Given
         when(messageSenderService.canSendMessages()).thenReturn(true);
-        when(messageSenderService.sendMessageBatch(any())).thenReturn(CompletableFuture.completedFuture(null));
+        when(messageSenderService.sendMessageBatch(any()))
+                .thenReturn(CompletableFuture.completedFuture(new MessageBatch(testMessages, "test.key")));
 
         // When
         CompletableFuture<ResponseEntity<String>> result = messageController.sendMessages(testMessages, "test.key");
@@ -122,8 +124,8 @@ class MessageControllerTest {
     @Test
     void testSendTestMessages_Success() {
         // Given
-        when(messageSenderService.canSendMessages()).thenReturn(true);
-        when(messageSenderService.sendMessageBatch(any())).thenReturn(CompletableFuture.completedFuture(null));
+        when(messageSenderService.sendMessageBatch(any()))
+                .thenReturn(CompletableFuture.completedFuture(new MessageBatch(testMessages, "test.key")));
 
         // When
         CompletableFuture<ResponseEntity<String>> result = messageController.sendTestMessages(3, "test", "test.key");
