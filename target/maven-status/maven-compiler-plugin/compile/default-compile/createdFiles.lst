@@ -1,9 +1,15 @@
 com/example/rabbitmq/model/ChannelStatus.class
+com/example/rabbitmq/model/DeliveryStatus.class
 com/example/rabbitmq/model/Message.class
+com/example/rabbitmq/service/DelayedMessageDispatcher$DelayedMessageTask.class
+com/example/rabbitmq/model/OutboundMessageEntity$OutboundMessageEntityBuilder.class
+com/example/rabbitmq/repository/OutboundMessageRepository.class
 com/example/rabbitmq/config/SchedulingConfig.class
 com/example/rabbitmq/service/ChannelMonitorService.class
 com/example/rabbitmq/RabbitmqMessageSenderApplication.class
 com/example/rabbitmq/model/MessageBatch.class
+com/example/rabbitmq/service/DelayedMessageDispatcher.class
+com/example/rabbitmq/model/OutboundMessageEntity.class
 com/example/rabbitmq/config/RabbitMQConfig.class
 com/example/rabbitmq/controller/MessageController.class
 com/example/rabbitmq/service/MessageSenderService.class
