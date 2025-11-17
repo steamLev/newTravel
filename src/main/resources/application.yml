@@ -51,3 +51,8 @@ rabbitmq:
     name: message.exchange
     type: direct
     durable: true
+
+message:
+  delivery:
+    delay-seconds: 60
+    max-attempts: 5
