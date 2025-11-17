@@ -32,19 +32,13 @@ public class MessageController {
         
         log.info("Received request to send {} messages", messages.size());
         
-        if (!messageSenderService.canSendMessages()) {
-            return CompletableFuture.completedFuture(
-                    ResponseEntity.badRequest().body("No available channels in RabbitMQ broker")
-            );
-        }
-        
         MessageBatch batch = new MessageBatch(messages, routingKey);
         
         return messageSenderService.sendMessageBatch(batch)
                 .thenApply(result -> {
-                    log.info("Successfully sent batch {} with {} messages", 
+                    log.info("Batch {} зарегистрирован на отложенную доставку ({} сообщений)",
                             result.getBatchId(), result.getTotalCount());
-                    return ResponseEntity.ok("Messages sent successfully. Batch ID: " + result.getBatchId());
+                    return ResponseEntity.ok("Сообщения поставлены в очередь на доставку через 60 секунд. Batch ID: " + result.getBatchId());
                 })
                 .exceptionally(throwable -> {
                     log.error("Failed to send messages", throwable);
@@ -63,14 +57,8 @@ public class MessageController {
         
         log.info("Received request to send single message: {}", message.getId());
         
-        if (!messageSenderService.canSendMessages()) {
-            return CompletableFuture.completedFuture(
-                    ResponseEntity.badRequest().body("No available channels in RabbitMQ broker")
-            );
-        }
-        
         return messageSenderService.sendSingleMessage(message, routingKey)
-                .thenApply(v -> ResponseEntity.ok("Message sent successfully: " + message.getId()))
+                .thenApply(v -> ResponseEntity.ok("Сообщение поставлено в очередь на доставку через 60 секунд: " + message.getId()))
                 .exceptionally(throwable -> {
                     log.error("Failed to send message", throwable);
                     return ResponseEntity.internalServerError()
@@ -139,8 +127,9 @@ public class MessageController {
         
         return messageSenderService.sendMessageBatch(batch)
                 .thenApply(result -> ResponseEntity.ok(
-                        "Test messages sent successfully. Batch ID: " + result.getBatchId() + 
-                        ", Count: " + result.getTotalCount()))
+                        "Тестовые сообщения поставлены в очередь на отложенную доставку. Batch ID: " +
+                                result.getBatchId() +
+                                ", Count: " + result.getTotalCount()))
                 .exceptionally(throwable -> ResponseEntity.internalServerError()
                         .body("Failed to send test messages: " + throwable.getMessage()));
     }

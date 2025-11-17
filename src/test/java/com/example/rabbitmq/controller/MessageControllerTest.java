@@ -2,6 +2,7 @@ package com.example.rabbitmq.controller;
 
 import com.example.rabbitmq.model.ChannelStatus;
 import com.example.rabbitmq.model.Message;
+import com.example.rabbitmq.model.MessageBatch;
 import com.example.rabbitmq.service.ChannelMonitorService;
 import com.example.rabbitmq.service.MessageSenderService;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,8 +50,8 @@ class MessageControllerTest {
     @Test
     void testSendMessages_Success() {
         // Given
-        when(messageSenderService.canSendMessages()).thenReturn(true);
-        when(messageSenderService.sendMessageBatch(any())).thenReturn(CompletableFuture.completedFuture(null));
+        MessageBatch batch = new MessageBatch(testMessages, "test.key");
+        when(messageSenderService.sendMessageBatch(any())).thenReturn(CompletableFuture.completedFuture(batch));
 
         // When
         CompletableFuture<ResponseEntity<String>> result = messageController.sendMessages(testMessages, "test.key");
@@ -59,22 +60,7 @@ class MessageControllerTest {
         assertNotNull(result);
         ResponseEntity<String> response = result.join();
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().contains("Messages sent successfully"));
-    }
-
-    @Test
-    void testSendMessages_NoChannelsAvailable() {
-        // Given
-        when(messageSenderService.canSendMessages()).thenReturn(false);
-
-        // When
-        CompletableFuture<ResponseEntity<String>> result = messageController.sendMessages(testMessages, "test.key");
-
-        // Then
-        assertNotNull(result);
-        ResponseEntity<String> response = result.join();
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertTrue(response.getBody().contains("No available channels"));
+        assertTrue(response.getBody().contains("Сообщения поставлены в очередь"));
     }
 
     @Test
@@ -122,8 +108,8 @@ class MessageControllerTest {
     @Test
     void testSendTestMessages_Success() {
         // Given
-        when(messageSenderService.canSendMessages()).thenReturn(true);
-        when(messageSenderService.sendMessageBatch(any())).thenReturn(CompletableFuture.completedFuture(null));
+        MessageBatch batch = new MessageBatch(testMessages, "test.key");
+        when(messageSenderService.sendMessageBatch(any())).thenReturn(CompletableFuture.completedFuture(batch));
 
         // When
         CompletableFuture<ResponseEntity<String>> result = messageController.sendTestMessages(3, "test", "test.key");
@@ -132,6 +118,6 @@ class MessageControllerTest {
         assertNotNull(result);
         ResponseEntity<String> response = result.join();
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().contains("Test messages sent successfully"));
+        assertTrue(response.getBody().contains("Тестовые сообщения поставлены в очередь"));
     }
 }

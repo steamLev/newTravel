@@ -1,47 +1,28 @@
 package com.example.rabbitmq.service;
 
-import com.example.rabbitmq.model.Message;
-import com.example.rabbitmq.model.MessageBatch;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SimpleMessageSenderServiceTest {
 
     @Mock
-    private RabbitTemplate rabbitTemplate;
+    private DelayedMessageDispatcher delayedMessageDispatcher;
 
     @Mock
     private ChannelMonitorService channelMonitorService;
 
     @InjectMocks
     private MessageSenderService messageSenderService;
-
-    private List<Message> testMessages;
-    private MessageBatch testBatch;
-
-    @BeforeEach
-    void setUp() {
-        testMessages = Arrays.asList(
-                new Message("Test message 1", "test", "high"),
-                new Message("Test message 2", "test", "medium"),
-                new Message("Test message 3", "test", "low")
-        );
-        testBatch = new MessageBatch(testMessages, "test.routing.key");
-    }
 
     @Test
     void testCanSendMessages() {

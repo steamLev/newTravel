@@ -8,24 +8,29 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MessageSenderServiceTest {
 
     @Mock
-    private RabbitTemplate rabbitTemplate;
+    private ChannelMonitorService channelMonitorService;
 
     @Mock
-    private ChannelMonitorService channelMonitorService;
+    private DelayedMessageDispatcher delayedMessageDispatcher;
 
     @InjectMocks
     private MessageSenderService messageSenderService;
@@ -45,10 +50,6 @@ class MessageSenderServiceTest {
 
     @Test
     void testSendMessageBatch_Success() {
-        // Given
-        when(channelMonitorService.areChannelsAvailable()).thenReturn(true);
-        doNothing().when(rabbitTemplate).convertAndSend(anyString(), anyString(), any(), any(), any());
-
         // When
         CompletableFuture<MessageBatch> result = messageSenderService.sendMessageBatch(testBatch);
 
@@ -57,25 +58,13 @@ class MessageSenderServiceTest {
         MessageBatch batchResult = result.join();
         assertEquals(testBatch.getBatchId(), batchResult.getBatchId());
         assertEquals(3, batchResult.getTotalCount());
-        verify(channelMonitorService, atLeastOnce()).areChannelsAvailable();
-    }
-
-    @Test
-    void testSendMessageBatch_NoChannelsAvailable() {
-        // Given
-        when(channelMonitorService.areChannelsAvailable()).thenReturn(false);
-
-        // When & Then
-        CompletableFuture<MessageBatch> result = messageSenderService.sendMessageBatch(testBatch);
-        assertThrows(RuntimeException.class, () -> result.join());
+        verify(delayedMessageDispatcher).enqueueBatch(testBatch);
     }
 
     @Test
     void testSendSingleMessage_Success() {
         // Given
         Message message = new Message("Test message", "test", "high");
-        when(channelMonitorService.areChannelsAvailable()).thenReturn(true);
-        doNothing().when(rabbitTemplate).convertAndSend(anyString(), anyString(), any(), any(), any());
 
         // When
         CompletableFuture<Void> result = messageSenderService.sendSingleMessage(message, "test.key");
@@ -83,7 +72,7 @@ class MessageSenderServiceTest {
         // Then
         assertNotNull(result);
         assertDoesNotThrow(() -> result.join());
-        verify(rabbitTemplate).convertAndSend(eq("message.exchange"), eq("test.key"), eq(message), any(), isNull());
+        verify(delayedMessageDispatcher).enqueueSingle(message, "test.key");
     }
 
     @Test
@@ -101,10 +90,6 @@ class MessageSenderServiceTest {
 
     @Test
     void testSendMessagesAsync_Success() {
-        // Given
-        when(channelMonitorService.areChannelsAvailable()).thenReturn(true);
-        doNothing().when(rabbitTemplate).convertAndSend(anyString(), anyString(), any(), any(), any());
-
         // When
         CompletableFuture<List<Message>> result = messageSenderService.sendMessagesAsync(testMessages, "test.key");
 
@@ -112,6 +97,7 @@ class MessageSenderServiceTest {
         assertNotNull(result);
         List<Message> messages = result.join();
         assertEquals(3, messages.size());
-        verify(channelMonitorService, atLeastOnce()).areChannelsAvailable();
+        verify(delayedMessageDispatcher, times(testMessages.size()))
+                .enqueueSingle(any(Message.class), eq("test.key"));
     }
 }
